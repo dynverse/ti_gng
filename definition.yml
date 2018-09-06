@@ -1,5 +1,6 @@
 id: projected_gng
 docker_repository: dynverse/ti_projected_gng
+singularity_collection: 1565
 container_url: https://github.com/dynverse/ti_projected_gng
 name: Projected GNG
 type: algorithm_test
