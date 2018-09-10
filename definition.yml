@@ -6,6 +6,7 @@ name: Projected GNG
 type: algorithm_test
 platform: R
 trajectory_types:
+- cycle
 - linear
 - bifurcation
 - convergence
