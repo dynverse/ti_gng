@@ -1,6 +1,6 @@
 set.seed(1)
 data <- dyntoy::generate_dataset(
-  id = "specific_example/projected_gng",
+  id = "specific_example/gng",
   num_cells = 99,
   num_features = 101,
   model = "tree"
