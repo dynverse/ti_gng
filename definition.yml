@@ -1,8 +1,8 @@
-id: projected_gng
-docker_repository: dynverse/ti_projected_gng
+id: gng
+docker_repository: dynverse/ti_gng
 singularity_collection: 1565
-container_url: https://github.com/dynverse/ti_projected_gng
-name: Projected GNG
+container_url: https://github.com/dynverse/ti_gng
+name: GNG
 source: tool
 implementation_id: gng
 platform: R
