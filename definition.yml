@@ -3,7 +3,7 @@ docker_repository: dynverse/ti_gng
 singularity_collection: 1565
 container_url: https://github.com/dynverse/ti_gng
 name: GNG
-source: tool
+source: offtheshelf
 implementation_id: gng
 platform: R
 trajectory_types:
