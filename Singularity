@@ -15,7 +15,7 @@ From: dynverse/dynwrap:r
 
 %post
     chmod -R 755 '/code'
-    apt-get install -y libudunits2-dev
+    apt-get update && apt-get install -y libudunits2-dev
     R -e 'devtools::install_github("rcannood/gng")'
 
 %runscript
