@@ -14,6 +14,9 @@ data <- read_rds("/ti/input/data.rds")
 params <- jsonlite::read_json("/ti/input/params.json")
 
 expression <- data$expression
+
+set.seed(params$seed)
+
 #   ____________________________________________________________________________
 #   Infer trajectory                                                        ####
 
