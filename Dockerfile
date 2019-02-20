@@ -1,11 +1,11 @@
-FROM dynverse/dynwrap:r
+FROM dynverse/dynwrappy3:v0.1.0
 
-LABEL version 0.1.7.1
+ARG GITHUB_PAT
 
 RUN apt-get update && apt-get install -y libudunits2-dev
 
 RUN R -e 'devtools::install_github("rcannood/gng")'
 
-ADD . /code
+COPY definition.yml example.R run.R /code/
 
 ENTRYPOINT Rscript /code/run.R

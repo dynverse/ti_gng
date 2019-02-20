@@ -1,29 +1,41 @@
-id: gng
-docker_repository: dynverse/ti_gng
-singularity_collection: 1565
-container_url: https://github.com/dynverse/ti_gng
-name: GNG
-source: offtheshelf
-implementation_id: gng
-platform: R
-trajectory_types:
-- cycle
-- linear
-- bifurcation
-- convergence
-- multifurcation
-- tree
-- acyclic_graph
-- graph
-- disconnected_graph
-topology_inference: free
-license: GPL-3
-code_url: https://github.com/rcannood/gng
-apt_dependencies: libudunits2-dev
+method:
+  id: gng
+  name: GNG
+  tool_id: gng
+  source: offtheshelf
+  platform: R
+  url: https://github.com/rcannood/gng
+  license: GPL-3
+  authors:
+  - given: Robrecht
+    family: Cannoodt
+    email: rcannood@gmail.com
+    ORCID: 0000-0003-3641-729X
+    github: rcannood
+
+wrapper:
+  wrapper_type: dimred_projection
+  topology_inference: free
+  trajectory_types:
+  - cycle
+  - linear
+  - bifurcation
+  - convergence
+  - multifurcation
+  - tree
+  - acyclic_graph
+  - graph
+  - disconnected_graph
+
+container:
+  docker: dynverse/ti_gng
+  url: https://github.com/dynverse/ti_gng
+
 parameters:
-  dimred:
-    type: discrete
-    default: pca
+  - id: dimred
+    description: Which dimensionality reduction method to use
+    type: character
+    default: landmark_mds
     values:
     - pca
     - mds
@@ -36,41 +48,41 @@ parameters:
     - mds_smacof
     - umap
     - dm_diffusionMap
-    description: Which dimensionality reduction method to use.
-  ndim:
+  - id: ndim
+    description: The number of dimensions
     type: integer
     default: 5
-    upper: 10
-    lower: 2
-    description: The number of dimensions
-  max_iter:
-    type: numeric
-    default: 15000.0
-    upper: 1000000.0
-    lower: 25.0
+    distribution:
+      type: uniform
+      lower: 2
+      upper: 10
+  - id: max_iter
     description: The max number of iterations
-  max_nodes:
+    type: numeric
+    default: 15000
+    distribution:
+      type: expuniform
+      lower: 25
+      upper: 1000000
+  - id: max_nodes
+    description: The maximum number of nodes
     type: integer
     default: 8
-    upper: 30
-    lower: 2
-    description: The maximum number of nodes
-  apply_mst:
+    distribution:
+      type: uniform
+      lower: 2
+      upper: 30
+  - id: apply_mst
+    description: If true, an MST post-processing of the GNG is performed
     type: logical
     default: yes
-    description: If true, an MST post-processing of the GNG is performed.
+
 input:
   format: rds
   required: expression
+
 output:
   format: rds
   outputs:
   - dimred_projection
   - timings
-wrapper_type: dimred_projection
-authors:
-- given: Robrecht
-  family: Cannoodt
-  email: rcannood@gmail.com
-  ORCID: 0000-0003-3641-729X
-  github: rcannood
