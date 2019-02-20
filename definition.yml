@@ -14,7 +14,7 @@ method:
     github: rcannood
 
 wrapper:
-  wrapper_type: dimred_projection
+  type: dimred_projection
   topology_inference: free
   trajectory_types:
   - cycle
