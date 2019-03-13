@@ -1,31 +1,36 @@
-library(jsonlite)
-library(readr)
-library(dplyr)
-library(purrr)
+#!/usr/local/bin/Rscript
 
-library(gng)
-library(igraph)
-library(dyndimred)
+task <- dyncli::main()
 
-#   ____________________________________________________________________________
-#   Load data                                                               ####
+# load libraries
+library(dyncli, warn.conflicts = FALSE)
+library(dynwrap, warn.conflicts = FALSE)
+library(dplyr, warn.conflicts = FALSE)
+library(purrr, warn.conflicts = FALSE)
 
-data <- read_rds("/ti/input/data.rds")
-params <- jsonlite::read_json("/ti/input/params.json")
+library(dyndimred, warn.conflicts = FALSE)
+library(gng, warn.conflicts = FALSE)
+library(igraph, warn.conflicts = FALSE)
 
-expression <- data$expression
-
-if (!is.null(params$seed)) set.seed(params$seed)
-
-#   ____________________________________________________________________________
-#   Infer trajectory                                                        ####
-
+#####################################
+###           LOAD DATA           ###
+#####################################
+expression <- task$expression
+params <- task$params
+priors <- task$priors
 
 # TIMING: done with preproc
-checkpoints <- list(method_afterpreproc = as.numeric(Sys.time()))
+timings <- list(method_afterpreproc = Sys.time())
 
+#####################################
+###        INFER TRAJECTORY       ###
+#####################################
 # perform dimensionality reduction
-space <- dyndimred::dimred(expression, method = params$dimred, ndim = params$ndim)
+space <- dyndimred::dimred(
+  as.matrix(expression), 
+  method = params$dimred, 
+  ndim = params$ndim
+) # todo: remove as.matrix
 
 # calculate GNG
 gng_out <- gng::gng(
@@ -37,7 +42,10 @@ gng_out <- gng::gng(
 node_dist <- stats::dist(gng_out$node_space) %>% as.matrix
 
 # transform to milestone network
-node_names <- gng_out$nodes %>% mutate(name = as.character(name))
+node_names <- 
+  gng_out$nodes %>% 
+  mutate(name = as.character(name))
+
 milestone_network <- gng_out$edges %>%
   select(from = i, to = j) %>%
   mutate(
@@ -53,19 +61,23 @@ if (params$apply_mst) {
 }
 
 # TIMING: done with method
-checkpoints$method_aftermethod <- as.numeric(Sys.time())
+timings$method_aftermethod <- Sys.time()
 
-# return output
-output <- lst(
-  cell_ids = rownames(expression),
-  milestone_ids = rownames(gng_out$node_space),
-  milestone_network,
-  dimred_milestones = gng_out$node_space,
-  dimred = space,
-  timings = checkpoints
-)
+#####################################
+###     SAVE OUTPUT TRAJECTORY    ###
+#####################################
+output <-
+  wrap_data(
+    cell_ids = rownames(expression)
+  ) %>%
+  add_dimred_projection(
+    milestone_ids = rownames(gng_out$node_space),
+    milestone_network = milestone_network,
+    dimred_milestones = gng_out$node_space,
+    dimred = space
+  ) %>%
+  add_timings(
+    timings = timings
+  )
 
-#   ____________________________________________________________________________
-#   Save output                                                             ####
-
-write_rds(output, "/ti/output/output.rds")
+dyncli::write_output(output, task$output)
