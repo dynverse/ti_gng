@@ -27,7 +27,7 @@ wrapper:
   - graph
   - disconnected_graph
   input_required: expression
-
+  
 container:
   docker: dynverse/ti_gng
   url: https://github.com/dynverse/ti_gng
