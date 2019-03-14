@@ -6,6 +6,6 @@ RUN apt-get update && apt-get install -y libudunits2-dev
 
 RUN R -e 'devtools::install_github("rcannood/gng")'
 
-COPY definition.yml example.sh run.R /code/
+COPY definition.yml run.R example.sh /code/
 
 ENTRYPOINT ["/code/run.R"]
