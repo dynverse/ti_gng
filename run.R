@@ -16,7 +16,7 @@ library(igraph, warn.conflicts = FALSE)
 ###           LOAD DATA           ###
 #####################################
 expression <- task$expression
-params <- task$params
+parameters <- task$parameters
 priors <- task$priors
 
 # TIMING: done with preproc
@@ -28,15 +28,15 @@ timings <- list(method_afterpreproc = Sys.time())
 # perform dimensionality reduction
 space <- dyndimred::dimred(
   as.matrix(expression), 
-  method = params$dimred, 
-  ndim = params$ndim
+  method = parameters$dimred, 
+  ndim = parameters$ndim
 ) # todo: remove as.matrix
 
 # calculate GNG
 gng_out <- gng::gng(
   space,
-  max_iter = params$max_iter,
-  max_nodes = params$max_nodes,
+  max_iter = parameters$max_iter,
+  max_nodes = parameters$max_nodes,
   assign_cluster = FALSE
 )
 node_dist <- stats::dist(gng_out$node_space) %>% as.matrix
@@ -55,7 +55,7 @@ milestone_network <- gng_out$edges %>%
   select(from, to, length, directed)
 
 # apply MST, if so desired
-if (params$apply_mst) {
+if (parameters$apply_mst) {
   gr <- igraph::graph_from_data_frame(milestone_network, directed = F, vertices = node_names$name)
   milestone_network <- igraph::minimum.spanning.tree(gr, weights = igraph::E(gr)$length) %>% igraph::as_data_frame()
 }
