@@ -27,10 +27,10 @@ timings <- list(method_afterpreproc = Sys.time())
 #####################################
 # perform dimensionality reduction
 space <- dyndimred::dimred(
-  as.matrix(expression), 
+  expression,
   method = parameters$dimred, 
   ndim = parameters$ndim
-) # todo: remove as.matrix
+)
 
 # calculate GNG
 gng_out <- gng::gng(
